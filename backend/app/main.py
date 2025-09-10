@@ -1,4 +1,5 @@
 from chat_engine import load_chat_engine
+from tts import synthesize
 
 chat_engine = load_chat_engine()
 
@@ -8,5 +9,4 @@ def generate_response(user_input: str) -> str:
     print(f"response: {response}")
     return response
 
-generate_response("你是誰？")
-generate_response("我上一個問題是什麼？")
+synthesize(generate_response("你是誰？"))
