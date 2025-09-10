@@ -155,9 +155,6 @@ document.addEventListener("DOMContentLoaded", function () {
             })
             .catch((e) => {
               console.warn("Auto-play prevented:", e);
-              addTerminalMessage(
-                "WARNING: AUTO-PLAY PREVENTED BY BROWSER. CLICK PLAY TO START AUDIO."
-              );
             });
         }
       };
@@ -185,20 +182,16 @@ document.addEventListener("DOMContentLoaded", function () {
       audioPlayer.src = url;
       audioPlayer.onloadeddata = function () {
         if (setupAudioSource(audioPlayer)) {
+          // audioPlayer.volume = 1.0;
           audioPlayer
             .play()
             .then(() => {
               isAudioPlaying = true;
               zoomCameraForAudio(true);
-              addTerminalMessage(`PLAYING DEMO TRACK: ${url.split("/").pop()}`);
               showNotification(`PLAYING: ${url.split("/").pop()}`);
             })
             .catch((e) => {
               console.warn("Play prevented:", e);
-              addTerminalMessage(
-                "WARNING: AUDIO PLAYBACK PREVENTED BY BROWSER. CLICK PLAY TO START AUDIO."
-              );
-              showNotification("CLICK PLAY TO START AUDIO");
             });
         }
       };
@@ -1252,23 +1245,6 @@ document.addEventListener("DOMContentLoaded", function () {
         phases[Math.floor(Math.random() * phases.length)];
     }, 3000);
   });
-  document.querySelectorAll(".demo-track-btn").forEach((btn) => {
-    btn.addEventListener("click", function () {
-      if (!isAudioInitialized) {
-        initAudio();
-      }
-      if (audioContext && audioContext.state === "suspended") {
-        audioContext.resume();
-      }
-      const url = this.dataset.url;
-      currentAudioSrc = url;
-      document.querySelectorAll(".demo-track-btn").forEach((b) => {
-        b.classList.remove("active");
-      });
-      this.classList.add("active");
-      loadAudioFromURL(url);
-    });
-  });
   document.getElementById("file-btn").addEventListener("click", function () {
     if (!isAudioInitialized) {
       initAudio();
@@ -1316,6 +1292,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
   document.addEventListener("click", tryPlayMusic);
 
+  const ws = new WebSocket("ws://localhost:8001/ws/audio");
+  ws.onopen = () => console.log("connected to websocket");
+  
+  ws.onmessage = (event) => {
+    const audioBytes = Uint8Array.from(atob(event.data), c => c.charCodeAt(0));
+    const blob = new Blob([audioBytes], { type: "audio/wav" });
+    const url = URL.createObjectURL(blob);
+    showNotification(`CORE RESPONDING...`);
+    loadAudioFromURL(url);
+  };
+
   // Get user question
   const input = document.getElementById("question-input");
   const button = document.getElementById("submit-question");
@@ -1325,7 +1312,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (question) {
       addTerminalMessage(`You asked: ${question}`);
       showNotification(`YOU ASKED: ${question}`);
-    // TODO: send question to backend and get audio response
+      ws.send(question);
       input.value = ""; // clear after submit
     }
   });

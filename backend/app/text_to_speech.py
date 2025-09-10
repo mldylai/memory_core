@@ -1,6 +1,6 @@
 import uuid
 import os
-import utils
+import utils 
 import torch
 import torchaudio
 from boson_multimodal.serve.serve_engine import HiggsAudioServeEngine, HiggsAudioResponse
@@ -12,7 +12,7 @@ MODEL_PATH = "bosonai/higgs-audio-v2-generation-3B-base"
 AUDIO_TOKENIZER_PATH = "bosonai/higgs-audio-v2-tokenizer"
 REF_AUDIO = "ref_audio/cwc01.wav"
 
-system_prompt = ("Generate audio following instruction.\n\n<|scene_desc_start|>\nAudio is recorded from a quiet spacious room with echoes.\n<|scene_desc_end|>")
+system_prompt = ("Generate audio following instruction.\n\n<|scene_desc_start|>\nAudio is recorded from a spacious room with echoes.\n<|scene_desc_end|>")
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
