@@ -163,7 +163,7 @@ document.addEventListener("DOMContentLoaded", function () {
         btn.classList.remove("active");
       });
       addTerminalMessage(`AUDIO FILE LOADED: ${file.name}`);
-      showNotification("AUDIO FILE LOADED");
+      showNotification("CORE RESPONDING...");
     } catch (error) {
       console.error("Audio file error:", error);
       addTerminalMessage("ERROR: AUDIO FILE PROCESSING FAILED.");
@@ -481,7 +481,6 @@ document.addEventListener("DOMContentLoaded", function () {
     setTimeout(() => {
       loadingOverlay.style.display = "none";
       initAudio();
-      initFloatingParticles();
     }, 500);
   }, 3000);
 
@@ -1291,15 +1290,15 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   document.addEventListener("click", tryPlayMusic);
-
+  
   const ws = new WebSocket("ws://localhost:8001/ws/audio");
   ws.onopen = () => console.log("connected to websocket");
   
   ws.onmessage = (event) => {
+    document.getElementById("load-text").classList.add("hidden");
     const audioBytes = Uint8Array.from(atob(event.data), c => c.charCodeAt(0));
     const blob = new Blob([audioBytes], { type: "audio/wav" });
     const url = URL.createObjectURL(blob);
-    showNotification(`CORE RESPONDING...`);
     loadAudioFromURL(url);
   };
 
@@ -1312,6 +1311,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (question) {
       addTerminalMessage(`You asked: ${question}`);
       showNotification(`YOU ASKED: ${question}`);
+      document.getElementById("load-text").classList.remove("hidden");
       ws.send(question);
       input.value = ""; // clear after submit
     }
