@@ -1,5 +1,6 @@
 # Memory Core
 An interactive voice/memory simulation.
+![Image](frontend/public/assets/frontend.png "Frontend")
 
 ### Dependencies
 Run the following to setup dependencies:

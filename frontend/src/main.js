@@ -198,7 +198,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const filename = url.split("/").pop();
       document.getElementById("file-label").textContent = filename;
       addTerminalMessage(`LOADING AUDIO FROM URL: ${url.substring(0, 40)}...`);
-      showNotification("AUDIO URL LOADED");
+      showNotification("CORE RESPONDING...");
     } catch (error) {
       console.error("Audio URL error:", error);
       addTerminalMessage("ERROR: AUDIO URL PROCESSING FAILED.");
