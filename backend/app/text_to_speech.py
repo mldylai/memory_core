@@ -10,7 +10,7 @@ from boson_multimodal.data_types import ChatMLSample, Message, AudioContent
 
 MODEL_PATH = "bosonai/higgs-audio-v2-generation-3B-base"
 AUDIO_TOKENIZER_PATH = "bosonai/higgs-audio-v2-tokenizer"
-REF_AUDIO = "ref_audio/cwc01.wav"
+REF_AUDIO = "ref_audio/mel.wav"
 
 system_prompt = ("Generate audio following instruction.\n\n<|scene_desc_start|>\nAudio is recorded from a spacious room with echoes.\n<|scene_desc_end|>")
 
@@ -44,5 +44,6 @@ def synthesize(text: str):
         seed=2025,
     )
     torchaudio.save(audio_filepath, torch.from_numpy(output.audio)[None, :], output.sampling_rate)
+    utils.add_reverb(audio_filepath)
     print(f"Saved: {audio_filepath}")
     return audio_filepath

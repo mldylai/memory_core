@@ -1,6 +1,8 @@
 import base64
 import opencc
 import re
+from pedalboard import Pedalboard, Reverb
+from pedalboard.io import AudioFile
 
 def encode_base64_content_from_file(file_path: str) -> str:
     """Encode a content from a local file to base64 format."""
@@ -58,3 +60,17 @@ def clean_punctuation(text: str) -> str:
     
     # Replace any punctuation (unicode category P) not in keep with space
     return re.sub(rf"[^\w\s{keep}]", " ", text)
+
+def add_reverb(input_wav: str, room_size: float = 0.6):
+    # Load audio
+    with AudioFile(input_wav) as f:
+        audio = f.read(f.frames)
+        samplerate = f.samplerate
+
+    # Apply reverb
+    board = Pedalboard([Reverb(room_size=room_size)])
+    wet = board(audio, samplerate)
+
+    # Save output
+    with AudioFile(input_wav, 'w', samplerate, wet.shape[0]) as f:
+        f.write(wet)

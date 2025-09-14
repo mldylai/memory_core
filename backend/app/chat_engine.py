@@ -32,7 +32,7 @@ def load_chat_engine():
         model="gpt-4",
         temperature=1.0,
         max_tokens=300,
-        system_prompt=(prompts.SYSTEM_PROMPT_0)
+        system_prompt=(prompts.SYSTEM_PROMPT_2)
     )
 
     # Step 4: Configure global Settings
@@ -41,7 +41,7 @@ def load_chat_engine():
     Settings.node_parser = SentenceSplitter(chunk_size=200, chunk_overlap=20)
 
     # Step 5: Load documents
-    documents = SimpleDirectoryReader("rag_input/").load_data()
+    documents = SimpleDirectoryReader("rag_input/mel/").load_data()
 
     # Step 6: Create index
     index = VectorStoreIndex.from_documents(documents)
